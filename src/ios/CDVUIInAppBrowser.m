@@ -869,7 +869,11 @@ static CDVUIInAppBrowser* instance = nil;
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-    return UIStatusBarStyleLightContent;
+    if ([[browserOptions.statusbarstyle lowercaseString] isEqualToString:@"dark"]) {
+    	return UIStatusBarStyleDefault;
+    } else {
+    	return UIStatusBarStyleLightContent;
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {
