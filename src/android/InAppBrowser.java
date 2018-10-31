@@ -257,7 +257,8 @@ public class InAppBrowser extends CordovaPlugin {
                 @SuppressLint("NewApi")
                 @Override
                 public void run() {
-                    ((InAppBrowserClient)inAppWebView.getWebViewClient()).waitForBeforeload = false;
+                       //this line throws an error in Android 6
+                       //((InAppBrowserClient)inAppWebView.getWebViewClient()).waitForBeforeload = false;
                     inAppWebView.loadUrl(url);
                 }
             });
