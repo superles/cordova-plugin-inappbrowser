@@ -46,7 +46,7 @@
         self.closebuttoncolor = nil;
         self.toolbarcolor = nil;
         self.toolbartranslucent = YES;
-        self.statusbartheme = @"dark";
+        self.statusbarstyle = @"dark";
     }
 
     return self;
