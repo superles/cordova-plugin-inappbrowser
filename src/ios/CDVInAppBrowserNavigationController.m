@@ -19,7 +19,7 @@
 
 #import "CDVInAppBrowserNavigationController.h"
 
-#define    STATUSBAR_HEIGHT 0.0
+#define    STATUSBAR_HEIGHT 20.0
 
 @implementation CDVInAppBrowserNavigationController : UINavigationController
 
@@ -32,7 +32,8 @@
 - (void) viewDidLoad {
 
     CGRect statusBarFrame = [self invertFrameIfNeeded:[UIApplication sharedApplication].statusBarFrame];
-    statusBarFrame.size.height = STATUSBAR_HEIGHT;
+    //statusBarFrame.size.height = STATUSBAR_HEIGHT; - rm gray overlay
+    statusBarFrame.size.height = 0.0;
     // simplified from: http://stackoverflow.com/a/25669695/219684
 
     UIToolbar* bgToolbar = [[UIToolbar alloc] initWithFrame:statusBarFrame];
