@@ -121,5 +121,11 @@
     }
 }
 
+- (void)loadAfterBeforeload:(CDVInvokedUrlCommand*)command
+{
+    if(!self.usewkwebview){
+        [[CDVUIInAppBrowser getInstance] loadAfterBeforeload:command];
+    }
+}
 
 @end
