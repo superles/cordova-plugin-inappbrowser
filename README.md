@@ -1,6 +1,6 @@
 ---
-title: Inappbrowser
-description: Open an in-app browser window.
+title: Inappbrowser-mnm
+description: Fork of apache inappbrowser v 3.1.0-dev
 ---
 <!--
 # license: Licensed to the Apache Software Foundation (ASF) under one
@@ -29,6 +29,10 @@ description: Open an in-app browser window.
 ||browser (chrome, firefox, edge)|
 ||iOS (9.3) on Xcode 7.3|
 ||Android (4.4)|
+
+# cordova-plugin-inappbrowser-mnm
+
+This is a fork of cordova-plugin-inappbrowser 3.1.0-dev with a change to remove status bar overlay from iOS and extra statusbarstyle option for iOS.
 
 # cordova-plugin-inappbrowser
 
@@ -156,6 +160,7 @@ instance, or the system browser.
     - __transitionstyle__: Set to `fliphorizontal`, `crossdissolve` or `coververtical` to set the [transition style](http://developer.apple.com/library/ios/#documentation/UIKit/Reference/UIViewController_Class/Reference/Reference.html#//apple_ref/occ/instp/UIViewController/modalTransitionStyle) (defaults to `coververtical`).
     - __toolbarposition__: Set to `top` or `bottom` (default is `bottom`). Causes the toolbar to be at the top or bottom of the window.
     - __hidespinner__: Set to `yes` or `no` to change the visibility of the loading indicator (defaults to `no`).
+    - __statusbarstyle__: Default 'dark' for black color over light content. Set to 'light' for white color over dark content.
 
     Windows supports these additional options:
 
