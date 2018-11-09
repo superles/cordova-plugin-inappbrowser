@@ -32,7 +32,7 @@ description: Fork of apache inappbrowser v 3.1.0-dev
 
 # cordova-plugin-inappbrowser-mnm
 
-This is a fork of cordova-plugin-inappbrowser 3.1.0-dev with a change to remove status bar overlay from iOS and extra statusbarstyle option for iOS.
+This is a fork of cordova-plugin-inappbrowser 3.1.0-dev with a change to remove status bar overlay from iOS, add Android status bar overlays web view support and add extra statusbarstyle option
 
 # cordova-plugin-inappbrowser
 
