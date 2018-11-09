@@ -934,12 +934,20 @@ static CDVUIInAppBrowser* instance = nil;
 - (void)viewWillAppear:(BOOL)animated
 {
     if (IsAtLeastiOSVersion(@"7.0")) {
-        //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
-	[[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];    
+        [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
     }
     [self rePositionViews];
 
     [super viewWillAppear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    if (IsAtLeastiOSVersion(@"7.0")) {
+        [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+    }
+
+    [super viewDidDisappear:animated];
 }
 
 //
