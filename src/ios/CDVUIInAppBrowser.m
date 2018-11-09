@@ -554,7 +554,7 @@ static CDVUIInAppBrowser* instance = nil;
         if (_previousStatusBarStyle != -1) {
             [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
         }
-	[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];    
+	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];    
     }
 
     _previousStatusBarStyle = -1; // this value was reset before reapplying it. caused statusbar to stay black on ios7
