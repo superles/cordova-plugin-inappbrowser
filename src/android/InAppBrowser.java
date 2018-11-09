@@ -111,6 +111,7 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String FOOTER = "footer";
     private static final String FOOTER_COLOR = "footercolor";
     private static final String BEFORELOAD = "beforeload";
+    private static final String STATUSBARSTYLE = "statusbarstyle";
 
     private static final List customizableOptions = Arrays.asList(CLOSE_BUTTON_CAPTION, TOOLBAR_COLOR, NAVIGATION_COLOR, CLOSE_BUTTON_COLOR, FOOTER_COLOR);
 
@@ -140,6 +141,7 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean showFooter = false;
     private String footerColor = "";
     private boolean useBeforeload = false;
+    private boolean isStatusBarLight = false;
     private String[] allowedSchemes;
 
     /**
@@ -257,8 +259,7 @@ public class InAppBrowser extends CordovaPlugin {
                 @SuppressLint("NewApi")
                 @Override
                 public void run() {
-                       //this line throws an error in Android 6
-                       //((InAppBrowserClient)inAppWebView.getWebViewClient()).waitForBeforeload = false;
+                    //((InAppBrowserClient)inAppWebView.getWebViewClient()).waitForBeforeload = false;
                     inAppWebView.loadUrl(url);
                 }
             });
@@ -695,6 +696,10 @@ public class InAppBrowser extends CordovaPlugin {
             if (beforeload != null) {
                 useBeforeload = beforeload.equals("yes") ? true : false;
             }
+            String statusBarStyle = features.get(STATUSBARSTYLE);
+            if (statusBarStyle != null) {
+                isStatusBarLight = statusBarStyle.equals("light") ? true : false;
+            }
         }
 
         final CordovaWebView thatWebView = this.webView;
@@ -772,8 +777,25 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Let's create the main dialog
                 dialog = new InAppBrowserDialog(cordova.getActivity(), android.R.style.Theme_NoTitleBar);
+
                 dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                dialog.getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                dialog.getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+                View decorView = dialog.getWindow().getDecorView();
+                int uiOptions = decorView.getSystemUiVisibility();
+
+                if (isStatusBarLight){
+                    decorView.setSystemUiVisibility(uiOptions | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }else{
+                    decorView.setSystemUiVisibility(uiOptions & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+
                 dialog.setCancelable(true);
                 dialog.setInAppBroswer(getInAppBrowser());
 
