@@ -866,7 +866,7 @@ static CDVUIInAppBrowser* instance = nil;
     [CDVUserAgentUtil releaseLock:&_userAgentLockToken];
     [super viewDidUnload];
 }
-/*
+
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     if ([[_browserOptions.statusbarstyle lowercaseString] isEqualToString:@"dark"]) {
@@ -875,7 +875,7 @@ static CDVUIInAppBrowser* instance = nil;
     	return UIStatusBarStyleLightContent;
     }
 }
-*/
+
 - (BOOL)prefersStatusBarHidden {
     return NO;
 }
@@ -930,7 +930,7 @@ static CDVUIInAppBrowser* instance = nil;
 {
     [self.webView goForward];
 }
-/*
+
 - (void)viewWillAppear:(BOOL)animated
 {
     if (IsAtLeastiOSVersion(@"7.0")) {
@@ -941,7 +941,7 @@ static CDVUIInAppBrowser* instance = nil;
 
     [super viewWillAppear:animated];
 }
-*/
+
 //
 // On iOS 7 the status bar is part of the view's dimensions, therefore it's height has to be taken into account.
 // The height of it could be hardcoded as 20 pixels, but that would assume that the upcoming releases of iOS won't
