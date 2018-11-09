@@ -20,6 +20,14 @@
 -->
 # Release Notes
 
+### 3.1.2 
+* (Android) Add support for status bar style 
+* (Android) Status bar overlays web view 
+
+### 3.1.1 
+* (iOS) Add support for status bar stye in iOS
+* (iOS) Remove iOS status bar background overlay
+
 ### 3.1.0-dev (Unreleased)
 * CB-7179 (iOS): Add support to optionally use WKWebView for iOS
 
