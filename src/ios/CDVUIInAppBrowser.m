@@ -552,7 +552,7 @@ static CDVUIInAppBrowser* instance = nil;
 
     if (IsAtLeastiOSVersion(@"7.0")) {
         if (_previousStatusBarStyle != -1) {
-            [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
+            //[[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
         }
     }
 
@@ -934,7 +934,7 @@ static CDVUIInAppBrowser* instance = nil;
 - (void)viewWillAppear:(BOOL)animated
 {
     if (IsAtLeastiOSVersion(@"7.0")) {
-        [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+        //[[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
     }
     [self rePositionViews];
 
