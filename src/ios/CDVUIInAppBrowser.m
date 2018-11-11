@@ -550,11 +550,14 @@ static CDVUIInAppBrowser* instance = nil;
     // Also - this is required for the PDF/User-Agent bug work-around.
     self.inAppBrowserViewController = nil;
 
-    if (IsAtLeastiOSVersion(@"7.0")) {
-        if (_previousStatusBarStyle != -1) {
-            [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
-        }
-    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+         if (IsAtLeastiOSVersion(@"7.0")) {
+	        if (_previousStatusBarStyle != -1) {
+		    [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
+		}
+         }
+    });
 
     _previousStatusBarStyle = -1; // this value was reset before reapplying it. caused statusbar to stay black on ios7
 }
@@ -857,6 +860,7 @@ static CDVUIInAppBrowser* instance = nil;
 
 - (void)viewDidLoad
 {
+    [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];	
     [super viewDidLoad];
 }
 
