@@ -20,7 +20,7 @@
 -->
 # Release Notes
 
-### 3.1.2 
+### 3.1.3
 * (Android) Add support for status bar style 
 * (Android) Status bar overlays web view 
 
