@@ -46,6 +46,7 @@
         self.toolbartranslucent = YES;
         self.beforeload = @"";
         self.statusbarstyle = @"dark";
+        self.statusbartransparent = NO;
     }
 
     return self;

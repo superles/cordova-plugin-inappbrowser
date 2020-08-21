@@ -39,6 +39,7 @@
 @property (nonatomic, copy) NSString* transitionstyle;
 @property (nonatomic, copy) NSString* statusbarstyle;
 
+@property (nonatomic, assign) BOOL statusbartransparent;
 @property (nonatomic, assign) BOOL enableviewportscale;
 @property (nonatomic, assign) BOOL mediaplaybackrequiresuseraction;
 @property (nonatomic, assign) BOOL allowinlinemediaplayback;

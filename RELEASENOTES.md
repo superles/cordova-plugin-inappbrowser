@@ -20,6 +20,11 @@
 -->
 # Release Notes
 
+### 4.1.1 (Aug 21, 2020)
+* (Android) Add statusbartransparent option for statusbar overlays webview
+* (iOS) Add statusbartransparent option for statusbar overlays webview, fix statusbar size
+* (iOS) Fix statusbar size calculation
+
 ### 4.1.0 (Aug 20, 2020)
 * (Android) Add support for status bar style
 * (Android) Status bar overlays web view

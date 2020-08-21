@@ -681,7 +681,7 @@ static CDVWKInAppBrowser* instance = nil;
 
     if (IsAtLeastiOSVersion(@"7.0")) {
         if (_previousStatusBarStyle != -1) {
-            //[[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
+            [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
             
         }
     }
@@ -1041,6 +1041,7 @@ BOOL isExiting = FALSE;
 
 - (void)viewDidLoad
 {
+    [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
     [super viewDidLoad];
 }
 
@@ -1055,7 +1056,11 @@ BOOL isExiting = FALSE;
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-    return UIStatusBarStyleDefault;
+    if ([[_browserOptions.statusbarstyle lowercaseString] isEqualToString:@"dark"]) {
+        return UIStatusBarStyleDefault;
+    } else {
+        return UIStatusBarStyleLightContent;
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -1113,7 +1118,11 @@ BOOL isExiting = FALSE;
 // change that value.
 //
 - (float) getStatusBarOffset {
-    return (float) IsAtLeastiOSVersion(@"7.0") ? [[UIApplication sharedApplication] statusBarFrame].size.height : 0.0;
+    if (_browserOptions.statusbartransparent) {
+        return (float) 0.0;
+    }else{
+        return (float) IsAtLeastiOSVersion(@"7.0") ? [[UIApplication sharedApplication] statusBarFrame].size.height : 0.0;
+    }
 }
 
 - (void) rePositionViews {
