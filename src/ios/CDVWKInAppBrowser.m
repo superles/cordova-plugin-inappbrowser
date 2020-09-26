@@ -1050,6 +1050,7 @@ BOOL isExiting = FALSE;
 
 - (void)viewDidLoad
 {
+    [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
     [super viewDidLoad];
 }
 
@@ -1064,11 +1065,10 @@ BOOL isExiting = FALSE;
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-    NSString* statusBarStylePreference = [self settingForKey:@"InAppBrowserStatusBarStyle"];
-    if (statusBarStylePreference && [statusBarStylePreference isEqualToString:@"lightcontent"]) {
-        return UIStatusBarStyleLightContent;
-    } else {
+    if ([[_browserOptions.statusbarstyle lowercaseString] isEqualToString:@"dark"]) {
         return UIStatusBarStyleDefault;
+    } else {
+        return UIStatusBarStyleLightContent;
     }
 }
 
@@ -1127,7 +1127,11 @@ BOOL isExiting = FALSE;
 // change that value.
 //
 - (float) getStatusBarOffset {
+    if (_browserOptions.statusbartransparent) {
+        return (float) 0.0;
+    }else{
     return (float) IsAtLeastiOSVersion(@"7.0") ? [[UIApplication sharedApplication] statusBarFrame].size.height : 0.0;
+}
 }
 
 - (void) rePositionViews {

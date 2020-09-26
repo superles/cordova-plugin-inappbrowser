@@ -19,6 +19,10 @@
 #
 -->
 # Release Notes
+### 4.1.0 (Sep 26, 2020)
+* (Android) Add statusbartransparent option for statusbar overlays webview
+* (iOS) Add statusbartransparent option for statusbar overlays webview, fix statusbar size
+* (iOS) Fix statusbar size calculation
 
 ### 4.0.0 (Jun 09, 2020)
 * [GH-715](https://github.com/apache/cordova-plugin-inappbrowser/pull/715) (ios): fix regression in 2706f34

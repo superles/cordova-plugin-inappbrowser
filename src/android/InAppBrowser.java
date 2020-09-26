@@ -120,8 +120,10 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String FOOTER_COLOR = "footercolor";
     private static final String BEFORELOAD = "beforeload";
     private static final String FULLSCREEN = "fullscreen";
+    private static final String STATUSBARSTYLE = "statusbarstyle";
+    private static final String STATUSBARTRANSPARENT = "statusbartransparent";
 
-    private static final List customizableOptions = Arrays.asList(CLOSE_BUTTON_CAPTION, TOOLBAR_COLOR, NAVIGATION_COLOR, CLOSE_BUTTON_COLOR, FOOTER_COLOR);
+    private static final List customizableOptions = Arrays.asList(CLOSE_BUTTON_CAPTION, TOOLBAR_COLOR, NAVIGATION_COLOR, CLOSE_BUTTON_COLOR, FOOTER_COLOR, STATUSBARSTYLE, STATUSBARTRANSPARENT);
 
     private InAppBrowserDialog dialog;
     private WebView inAppWebView;
@@ -151,6 +153,8 @@ public class InAppBrowser extends CordovaPlugin {
     private String footerColor = "";
     private String beforeload = "";
     private boolean fullscreen = true;
+    private boolean isStatusBarLight = false;
+    private boolean isStatusBarTransparent = false;
     private String[] allowedSchemes;
     private InAppBrowserClient currentClient;
 
@@ -262,7 +266,7 @@ public class InAppBrowser extends CordovaPlugin {
         }
         else if (action.equals("loadAfterBeforeload")) {
             if (beforeload == null) {
-                LOG.e(LOG_TAG, "unexpected loadAfterBeforeload called without feature beforeload=yes");
+              LOG.e(LOG_TAG, "unexpected loadAfterBeforeload called without feature beforeload=yes");
             }
             final String url = args.getString(0);
             this.cordova.getActivity().runOnUiThread(new Runnable() {
@@ -721,6 +725,14 @@ public class InAppBrowser extends CordovaPlugin {
             if (fullscreenSet != null) {
                 fullscreen = fullscreenSet.equals("yes") ? true : false;
             }
+            String statusBarStyle = features.get(STATUSBARSTYLE);
+            if (statusBarStyle != null) {
+                isStatusBarLight = statusBarStyle.equals("light") ? true : false;
+            }
+            String statusBarTransparent = features.get(STATUSBARTRANSPARENT);
+            if (statusBarTransparent != null) {
+                isStatusBarTransparent = statusBarTransparent.equals("yes") ? true : false;
+            }
         }
 
         final CordovaWebView thatWebView = this.webView;
@@ -803,7 +815,24 @@ public class InAppBrowser extends CordovaPlugin {
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 if (fullscreen) {
                     dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }else if (isStatusBarTransparent){
+                    //Set statusbar style transparent
+                    dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    dialog.getWindow().getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                    dialog.getWindow().setStatusBarColor(Color.TRANSPARENT);
                 }
+
+                //Set statusbar color
+                View decorView = dialog.getWindow().getDecorView();
+                int uiOptions = decorView.getSystemUiVisibility();
+                if (isStatusBarLight){
+                    decorView.setSystemUiVisibility(uiOptions & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }else{
+                    decorView.setSystemUiVisibility(uiOptions | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+
                 dialog.setCancelable(true);
                 dialog.setInAppBroswer(getInAppBrowser());
 

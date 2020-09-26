@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-inappbrowser",
-  "version": "4.0.1-dev",
+  "version": "4.1.0",
   "description": "Cordova InAppBrowser Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
@@ -13,8 +13,11 @@
       "windows"
     ]
   },
-  "repository": "github:apache/cordova-plugin-inappbrowser",
-  "bugs": "https://github.com/apache/cordova-plugin-inappbrowser/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superles/cordova-plugin-inappbrowser"
+  },
+  "bugs": "https://github.com/superles/cordova-plugin-inappbrowser/issues",
   "keywords": [
     "cordova",
     "in",
