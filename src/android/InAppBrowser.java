@@ -90,6 +90,8 @@ import java.util.StringTokenizer;
 @SuppressLint("SetJavaScriptEnabled")
 public class InAppBrowser extends CordovaPlugin {
 
+    private static final String TAG = "InAppBrowser";
+
     private static final String NULL = "null";
     protected static final String LOG_TAG = "InAppBrowser";
     private static final String SELF = "_self";
@@ -167,6 +169,27 @@ public class InAppBrowser extends CordovaPlugin {
      * @return A PluginResult object with a status and message.
      */
     public boolean execute(String action, CordovaArgs args, final CallbackContext callbackContext) throws JSONException {
+
+        if ("styleDefault".equals(action)) {
+            this.cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setStatusBarStyle("default");
+                }
+            });
+            return true;
+        }
+
+        if ("styleLightContent".equals(action)) {
+            this.cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setStatusBarStyle("lightcontent");
+                }
+            });
+            return true;
+        }
+
         if (action.equals("open")) {
             this.callbackContext = callbackContext;
             final String url = args.getString(0);
@@ -1574,4 +1597,40 @@ public class InAppBrowser extends CordovaPlugin {
             super.onReceivedHttpAuthRequest(view, handler, host, realm);
         }
     }
+
+    private void setStatusBarStyle(final String style) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (style != null && !style.isEmpty()) {
+
+
+
+                    View decorView = dialog.getWindow().getDecorView();
+
+                    int uiOptions = decorView.getSystemUiVisibility();
+
+                    String[] darkContentStyles = {
+                        "default",
+                            "dark"
+                    };
+
+                    String[] lightContentStyles = {
+                        "lightcontent",
+                        "blacktranslucent",
+                        "blackopaque",
+                    };
+
+                    if (Arrays.asList(darkContentStyles).contains(style.toLowerCase())) {
+                        decorView.setSystemUiVisibility(uiOptions | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                        return;
+                    }
+
+                    if (Arrays.asList(lightContentStyles).contains(style.toLowerCase())) {
+                        decorView.setSystemUiVisibility(uiOptions & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                        return;
+                    }
+
+                    LOG.e(TAG, "Invalid style, must be either 'default', 'lightcontent' or the deprecated 'blacktranslucent' and 'blackopaque'");
+                }
+            }
+        }
 }
