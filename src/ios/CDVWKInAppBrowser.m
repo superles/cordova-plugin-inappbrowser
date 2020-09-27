@@ -24,6 +24,7 @@
 #endif
 
 #import <Cordova/CDVPluginResult.h>
+#import <objc/runtime.h>
 
 #define    kInAppBrowserTargetSelf @"_self"
 #define    kInAppBrowserTargetSystem @"_system"
@@ -39,6 +40,9 @@
 #define    FOOTER_HEIGHT ((TOOLBAR_HEIGHT) + (LOCATIONBAR_HEIGHT))
 
 #pragma mark CDVWKInAppBrowser
+
+static const void *kHideStatusBar = &kHideStatusBar;
+static const void *kStatusBarStyle = &kStatusBarStyle;
 
 @interface CDVWKInAppBrowser () {
     NSInteger _previousStatusBarStyle;
@@ -60,6 +64,8 @@ static CDVWKInAppBrowser* instance = nil;
     _callbackIdPattern = nil;
     _beforeload = @"";
     _waitForBeforeload = NO;
+    NSNumber* uiviewControllerBasedStatusBarAppearance = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIViewControllerBasedStatusBarAppearance"];
+    _uiviewControllerBasedStatusBarAppearance = (uiviewControllerBasedStatusBarAppearance == nil || [uiviewControllerBasedStatusBarAppearance boolValue]);
 }
 
 - (void)onReset
@@ -233,6 +239,16 @@ static CDVWKInAppBrowser* instance = nil;
         }
     }
     self.inAppBrowserViewController.modalTransitionStyle = transitionStyle;
+
+
+    if (browserOptions.statusbarstyle != nil){
+        NSString * styleSetting = [browserOptions.statusbarstyle lowercaseString] ;
+        if ([styleSetting isEqualToString:@"dark"]) {
+            [self setStatusBarStyle:styleSetting];
+        } else {
+            [self setStatusBarStyle:styleSetting];
+        }
+    }
     
     //prevent webView from bouncing
     if (browserOptions.disallowoverscroll) {
@@ -361,6 +377,63 @@ static CDVWKInAppBrowser* instance = nil;
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
         [[UIApplication sharedApplication] openURL:url];
     }
+}
+
+- (void) refreshStatusBarAppearance
+{
+    SEL sel = NSSelectorFromString(@"setNeedsStatusBarAppearanceUpdate");
+    if ([self.inAppBrowserViewController respondsToSelector:sel]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.inAppBrowserViewController performSelector:sel withObject:nil];
+#pragma clang diagnostic pop
+    }
+}
+
+- (void) setStyleForStatusBar:(UIStatusBarStyle)style
+{
+    if (_uiviewControllerBasedStatusBarAppearance) {
+        CDVWKInAppBrowserViewController* vc = (CDVWKInAppBrowserViewController*)self.viewController;
+        self.inAppBrowserViewController.sb_statusBarStyle = [NSNumber numberWithInt:style];
+        [self refreshStatusBarAppearance];
+
+    } else {
+        [[UIApplication sharedApplication] setStatusBarStyle:style];
+    }
+}
+
+- (void) setStatusBarStyle:(NSString*)statusBarStyle
+{
+    // default, lightContent, blackTranslucent, blackOpaque
+    NSString* lcStatusBarStyle = [statusBarStyle lowercaseString];
+
+    if ([lcStatusBarStyle isEqualToString:@"dark"]) {
+        [self styleDefault:nil];
+    }else{
+        [self styleLightContent:nil];
+    }
+}
+
+- (void) styleDefault:(CDVInvokedUrlCommand*)command
+{
+    if (@available(iOS 13.0, *)) {
+        // TODO - Replace with UIStatusBarStyleDarkContent once Xcode 10 support is dropped
+        [self setStyleForStatusBar:3];
+    } else {
+        [self setStyleForStatusBar:UIStatusBarStyleDefault];
+    }
+}
+
+- (void) styleLightContent:(CDVInvokedUrlCommand*)command
+{
+    [self setStyleForStatusBar:UIStatusBarStyleLightContent];
+}
+
+- (void) setStatusBarStyleCustom:(CDVInvokedUrlCommand*)command
+{
+    NSString* style = [command argumentAtIndex:0];
+
+    [self setStatusBarStyle:style];
 }
 
 - (void)loadAfterBeforeload:(CDVInvokedUrlCommand*)command
@@ -697,6 +770,9 @@ static CDVWKInAppBrowser* instance = nil;
 
 @synthesize currentURL;
 
+@dynamic sb_hideStatusBar;
+@dynamic sb_statusBarStyle;
+
 CGFloat lastReducedStatusBarHeight = 0.0;
 BOOL isExiting = FALSE;
 
@@ -722,7 +798,9 @@ BOOL isExiting = FALSE;
 - (void)createViews
 {
     // We create the views in code for primarily for ease of upgrades and not requiring an external .xib to be included
-    
+
+    self.sb_hideStatusBar = [NSNumber numberWithBool:NO];
+
     CGRect webViewBounds = self.view.bounds;
     BOOL toolbarIsAtBottom = ![_browserOptions.toolbarposition isEqualToString:kInAppBrowserToolbarBarPositionTop];
     webViewBounds.size.height -= _browserOptions.location ? FOOTER_HEIGHT : TOOLBAR_HEIGHT;
@@ -842,6 +920,9 @@ BOOL isExiting = FALSE;
     if (!_browserOptions.toolbartranslucent) { // Set toolbar translucent to no if user sets it in options
       self.toolbar.translucent = NO;
     }
+
+
+
     
     CGFloat labelInset = 5.0;
     float locationBarY = toolbarIsAtBottom ? self.view.bounds.size.height - FOOTER_HEIGHT : self.view.bounds.size.height - LOCATIONBAR_HEIGHT;
@@ -1063,17 +1144,29 @@ BOOL isExiting = FALSE;
     }
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    if ([[_browserOptions.statusbarstyle lowercaseString] isEqualToString:@"dark"]) {
-        return UIStatusBarStyleDefault;
-    } else {
-        return UIStatusBarStyleLightContent;
-    }
+- (id)sb_hideStatusBar {
+    return objc_getAssociatedObject(self, kHideStatusBar);
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return NO;
+- (void)setSb_hideStatusBar:(id)newHideStatusBar {
+    objc_setAssociatedObject(self, kHideStatusBar, newHideStatusBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (id)sb_statusBarStyle {
+    return objc_getAssociatedObject(self, kStatusBarStyle);
+}
+
+- (void)setSb_statusBarStyle:(id)newStatusBarStyle {
+    objc_setAssociatedObject(self, kStatusBarStyle, newStatusBarStyle, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return (UIStatusBarStyle)[self.sb_statusBarStyle intValue];
+}
+
+- (BOOL) prefersStatusBarHidden {
+    return [self.sb_hideStatusBar boolValue];
 }
 
 - (void)close

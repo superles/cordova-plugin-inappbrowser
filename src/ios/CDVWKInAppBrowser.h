@@ -28,7 +28,7 @@
 
 @interface CDVWKInAppBrowser : CDVPlugin {
     UIWindow * tmpWindow;
-
+    BOOL _uiviewControllerBasedStatusBarAppearance;
     @private
     NSString* _beforeload;
     BOOL _waitForBeforeload;
@@ -46,6 +46,9 @@
 - (void)show:(CDVInvokedUrlCommand*)command;
 - (void)hide:(CDVInvokedUrlCommand*)command;
 - (void)loadAfterBeforeload:(CDVInvokedUrlCommand*)command;
+- (void)styleDefault:(CDVInvokedUrlCommand*)command;
+- (void)styleLightContent:(CDVInvokedUrlCommand*)command;
+- (void)setStatusBarStyleCustom:(CDVInvokedUrlCommand*)command;
 
 @end
 
@@ -54,7 +57,8 @@
     CDVInAppBrowserOptions *_browserOptions;
     NSDictionary *_settings;
 }
-
+@property (nonatomic, retain) id sb_hideStatusBar;
+@property (nonatomic, retain) id sb_statusBarStyle;
 @property (nonatomic, strong) IBOutlet WKWebView* webView;
 @property (nonatomic, strong) IBOutlet WKWebViewConfiguration* configuration;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* closeButton;

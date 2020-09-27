@@ -209,6 +209,8 @@ The object returned from a call to `cordova.InAppBrowser.open` when the target i
 - hide
 - executeScript
 - insertCSS
+- styleDefault - change statusbar style
+- styleLightContent - change statusbar style
 
 ## InAppBrowser.addEventListener
 

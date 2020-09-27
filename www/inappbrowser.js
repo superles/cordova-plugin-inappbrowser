@@ -89,7 +89,14 @@
             } else {
                 throw new Error('insertCSS requires exactly one of code or file to be specified');
             }
+        },
+        styleDefault: function () {
+            exec(null, null, 'InAppBrowser', 'styleDefault', []);
+        },
+        styleLightContent: function () {
+            exec(null, null, 'InAppBrowser', 'styleLightContent', []);
         }
+
     };
 
     module.exports = function (strUrl, strWindowName, strWindowFeatures, callbacks) {
